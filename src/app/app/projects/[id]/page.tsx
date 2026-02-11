@@ -1,7 +1,10 @@
 import { notFound } from "next/navigation";
 import { Folder, Calendar } from "lucide-react";
 import { getProjectById } from "@/app/actions/projects";
+import { getTasks } from "@/app/actions/tasks";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { NewTaskDialog } from "@/components/tasks/new-task-dialog";
+import { TaskList } from "@/components/tasks/task-list";
 
 interface ProjectDetailPageProps {
   params: Promise<{ id: string }>;
@@ -29,45 +32,41 @@ export default async function ProjectDetailPage({
     notFound();
   }
 
+  // Fetch tasks for this project
+  const tasks = await getTasks(id);
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Project Header */}
         <div className="mb-8">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center">
-              <Folder className="w-6 h-6 text-blue-600" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">
-                {project.name}
-              </h1>
-              <div className="flex items-center gap-2 text-sm text-gray-500 mt-1">
-                <Calendar className="w-4 h-4" />
-                <span>Created {formatDate(project.created_at)}</span>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center">
+                <Folder className="w-6 h-6 text-blue-600" />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900">
+                  {project.name}
+                </h1>
+                <div className="flex items-center gap-2 text-sm text-gray-500 mt-1">
+                  <Calendar className="w-4 h-4" />
+                  <span>Created {formatDate(project.created_at)}</span>
+                </div>
               </div>
             </div>
+            {/* New Task Button */}
+            <NewTaskDialog projectId={id} />
           </div>
         </div>
 
-        {/* Placeholder Content */}
+        {/* Tasks Section */}
         <Card>
           <CardHeader>
             <h2 className="text-xl font-semibold">Tasks</h2>
           </CardHeader>
           <CardContent>
-            <div className="text-center py-12">
-              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Folder className="w-8 h-8 text-gray-400" />
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Tasks coming in Milestone 3
-              </h3>
-              <p className="text-gray-500 max-w-md mx-auto">
-                This is a placeholder page. Task creation, listing, and management
-                will be implemented in the next milestone.
-              </p>
-            </div>
+            <TaskList projectId={id} initialTasks={tasks} />
           </CardContent>
         </Card>
       </div>

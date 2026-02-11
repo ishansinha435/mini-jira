@@ -25,8 +25,9 @@ function formatDate(dateString: string): string {
   }
 }
 
-export function ProjectCard({ project, taskCount = 0 }: ProjectCardProps) {
+export function ProjectCard({ project, taskCount }: ProjectCardProps) {
   const formattedDate = formatDate(project.created_at);
+  const displayTaskCount = taskCount ?? project.task_count ?? 0;
 
   return (
     <Link href={`/app/projects/${project.id}`}>
@@ -46,7 +47,7 @@ export function ProjectCard({ project, taskCount = 0 }: ProjectCardProps) {
           </p>
         </CardContent>
         <CardFooter className="pt-0 flex items-center justify-between text-sm text-gray-500">
-          <span>{taskCount} tasks</span>
+          <span>{displayTaskCount} tasks</span>
           <span>Last activity: {formattedDate}</span>
         </CardFooter>
       </Card>

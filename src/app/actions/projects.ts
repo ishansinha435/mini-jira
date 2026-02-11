@@ -64,16 +64,20 @@ export async function createProject(name: string) {
 }
 
 /**
- * Get all projects for the current user
+ * Get all projects for the current user with task counts
  * RLS policy automatically filters by auth.uid()
  */
 export async function getProjects(): Promise<Project[]> {
   try {
     const supabase = await createClient();
 
+    // Fetch projects with task count
     const { data, error } = await supabase
       .from("projects")
-      .select("*")
+      .select(`
+        *,
+        tasks:tasks(count)
+      `)
       .order("created_at", { ascending: false });
 
     if (error) {
@@ -81,7 +85,16 @@ export async function getProjects(): Promise<Project[]> {
       return [];
     }
 
-    return data as Project[];
+    // Transform data to include task_count
+    const projects = data.map((project: any) => ({
+      id: project.id,
+      owner_id: project.owner_id,
+      name: project.name,
+      created_at: project.created_at,
+      task_count: project.tasks[0]?.count || 0,
+    }));
+
+    return projects as Project[];
   } catch (error) {
     console.error("Unexpected error fetching projects:", error);
     return [];
