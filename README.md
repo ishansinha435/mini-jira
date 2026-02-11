@@ -50,12 +50,12 @@ npm run dev
 
 ## Development Milestones
 
-- [x] **Milestone 0** - Repo + Foundation (In Progress)
+- [x] **Milestone 0** - Repo + Foundation (Complete)
   - [x] Stage 1: Next.js + TypeScript + Tailwind setup
-  - [ ] Stage 2: Project structure
-  - [ ] Stage 3: shadcn/ui installation
-  - [ ] Stage 4: App shell & navigation
-  - [ ] Stage 5: Dashboard home page
+  - [x] Stage 2: Project structure
+  - [x] Stage 3: shadcn/ui installation
+  - [x] Stage 4: App shell & navigation
+  - [x] Stage 5: Dashboard home page
 - [ ] **Milestone 1** - Supabase Connection + Auth
 - [ ] **Milestone 2** - Projects (CRUD)
 - [ ] **Milestone 3** - Tasks (CRUD + List UI)
