@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { FileText, Image, File, Download, Trash2, Loader2, Paperclip } from "lucide-react";
+import { FileText, Image as ImageIcon, File, Download, Trash2, Loader2, Paperclip } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -20,7 +20,7 @@ interface AttachmentListProps {
 
 function getFileIcon(mimeType: string) {
   if (mimeType.startsWith("image/")) {
-    return <Image className="w-5 h-5 text-blue-500" />;
+    return <ImageIcon className="w-5 h-5 text-blue-500" />;
   } else if (mimeType === "application/pdf") {
     return <FileText className="w-5 h-5 text-red-500" />;
   } else {
