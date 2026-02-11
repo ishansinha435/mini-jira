@@ -1,0 +1,153 @@
+---
+description: Next.js + Supabase + shadcn development standards for assessment-ready full-stack apps
+alwaysApply: true
+---
+
+# Next.js + Supabase + shadcn Development Standards
+
+You are an expert in TypeScript, Node.js, Next.js App Router, React Server Components, Tailwind CSS, shadcn/ui, and Supabase (Auth, Postgres, RLS, Storage).
+
+The goal is to build an assessment-ready full-stack app with clean UX, secure defaults, minimal scope creep, and reliable local/Docker run.
+
+## 0) Operating Mode
+
+- Prefer incremental development: implement one feature at a time.
+- Limit code changes to the minimum necessary to implement the requested feature or fix.
+- Do not refactor unrelated code unless it directly enables the requested change.
+- If requirements are ambiguous, ask concise clarifying questions BEFORE coding.
+- When providing implementation plans:
+  - Keep code snippets minimal (only if essential).
+  - Never mention timelines or time estimates.
+  - Output a checklist of steps and files to touch.
+
+## 1) Tech Stack (Must Follow)
+
+**Frontend:**
+- Next.js App Router (Next 15+ if available), TypeScript, React
+- Tailwind CSS
+- shadcn/ui for UI primitives (Button, Input, Card, Dialog, Table, Tabs, Select, etc.)
+- lucide-react for icons (optional)
+
+**Backend (Supabase-only for this project unless explicitly required otherwise):**
+- Supabase Auth
+- Supabase Postgres
+- Supabase Row Level Security (RLS)
+- Supabase Storage (if attachments/uploads are needed)
+
+No additional backend frameworks (Express/FastAPI/Flask) unless explicitly requested.
+
+## 2) Project Structure & Naming
+
+- Use /src structure:
+  - `/src/app` for routes/pages (App Router)
+  - `/src/components` for reusable domain components
+  - `/src/components/ui` for shadcn-generated primitives (do not hand-roll duplicates)
+  - `/src/lib` for utilities (supabase clients, validators, rate limiting helpers)
+  - `/src/types` for shared TS types where helpful
+- Use lowercase-with-dashes for folders and files (e.g., `components/task-list`).
+- Prefer named exports for React components.
+- Keep components small and focused. Extract repeated UI into reusable components.
+
+## 3) UI / Frontend Rules (shadcn-first)
+
+- Use shadcn/ui primitives whenever available. Do not create custom primitives (no custom Button/Input/Dialog/Table replacements).
+- If a shadcn component is needed but missing, add it via: `npx shadcn@latest add <component>`
+- Use Tailwind for layout and spacing. Maintain a consistent design system:
+  - Consistent spacing scale (e.g., p-4/p-6, gap-4/gap-6, space-y-4).
+  - Use Card/Table/Badge for structure and hierarchy.
+- Mobile-first responsive design.
+- UX requirements:
+  - Loading states, empty states, and error states for all data views.
+  - Toast notifications for success/error where helpful.
+  - Accessible dialogs and forms (labels, keyboard support).
+- Keep the UI visually appealing: clear hierarchy, consistent typography, minimal clutter.
+
+## 4) Next.js / React Rules (Performance & Architecture)
+
+- Favor React Server Components by default.
+- Minimize 'use client'. Only use it when necessary for browser APIs or local UI state.
+- Do not fetch data in client components unless unavoidable.
+- Use Server Actions or Route Handlers for server-side mutations.
+- Prefer simple, declarative JSX. Avoid complex nested conditionals; extract helpers.
+
+## 5) TypeScript Rules
+
+- Use strong typing throughout. No 'any' unless justified.
+- Use type OR interface as appropriate; prioritize readability and correctness.
+- Avoid enums; prefer string unions or const maps.
+- Use RORO (Receive an Object, Return an Object) for complex function parameters/returns.
+- Use descriptive variable names with auxiliary verbs (isLoading, hasError, canSubmit).
+
+## 6) Supabase Rules (Security, RLS, Data)
+
+- Enable RLS on all tables.
+- Write policies so users can only access their own data (owner_id = auth.uid()).
+- Never expose service role keys to the client.
+- NEXT_PUBLIC_* variables may include only public values:
+  - NEXT_PUBLIC_SUPABASE_URL
+  - NEXT_PUBLIC_SUPABASE_ANON_KEY (anon key is public)
+- Prefer SQL migrations/scripts stored in /ProjectDocs or /supabase (if you add it).
+- If using Storage:
+  - Use per-user paths and enforce access via RLS or Storage policies.
+  - Store attachment metadata in Postgres.
+
+## 7) API Endpoint Rules (Rate Limiting & Abuse Mitigation)
+
+- All Route Handlers (and any public Server Actions that can be triggered externally) must be rate limited.
+- Prefer a simple, minimal implementation suitable for demo:
+  - In-memory limiter is acceptable for single-container demo usage.
+  - If a shared limiter is required, suggest Upstash/Redis, but do not add unless asked.
+- Return proper status codes:
+  - 429 for rate limit exceeded
+  - 401/403 for auth issues
+  - 400 for validation
+
+**Captcha:**
+- Captcha on auth/signup routes is OPTIONAL by default (adds integration complexity).
+- Only implement Captcha if:
+  - the prompt explicitly demands it, OR
+  - the app is public-facing with open signup and abuse risk is a key requirement.
+- If implemented, prefer a widely supported provider and keep integration minimal.
+
+## 8) Testing & Verification
+
+- After each feature, run a quick smoke test of the relevant user flow.
+- Add minimal automated tests where they add high value:
+  - validation utilities
+  - critical data mutations (happy path + one failure path)
+- Do not add large testing frameworks or heavy mocks unless requested.
+
+## 9) Git / Incremental Workflow
+
+- Work feature-by-feature following the project overview.
+- Make small commits per feature with clear messages.
+- Do not mix unrelated changes in the same commit.
+- Keep diffs small and reviewable.
+
+## 10) Documentation & Style Docs
+
+- Maintain stable project docs in /ProjectDocs:
+  - `/ProjectDocs/contexts/projectContext.md` (high-level scope + constraints)
+  - `/ProjectDocs/Build_Notes/` (lightweight build notes per task group)
+- Keep docs concise and actionable.
+- Update docs only when there are meaningful scope or design changes.
+- When asked to write plans or docs, prioritize clarity and brevity.
+
+**Build Notes (lightweight version):**
+- For each task group, create a note in `/ProjectDocs/Build_Notes/`:
+  - Task Objective
+  - Current State
+  - Future State
+  - Checklist plan (never delete items; mark done/struck-through)
+
+## 11) Dependency Discipline
+
+- Do not introduce new dependencies unless necessary.
+- If a dependency is suggested, explain why and keep it minimal.
+- Prefer built-in capabilities of Next.js/Supabase/shadcn first.
+
+## 12) Output Expectations
+
+- When coding: modify only the necessary files; keep changes minimal.
+- When planning: produce a checklist with file-level granularity, minimal code snippets, and no timelines.
+- When uncertain: ask concise clarifying questions.
