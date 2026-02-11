@@ -56,7 +56,7 @@ export async function createProject(name: string) {
     return { success: true, project: data as Project };
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return { error: error.errors[0].message };
+      return { error: error.issues[0].message };
     }
     console.error("Unexpected error:", error);
     return { error: "An unexpected error occurred" };
@@ -159,7 +159,7 @@ export async function updateProject(id: string, name: string) {
     return { success: true, project: data as Project };
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return { error: error.errors[0].message };
+      return { error: error.issues[0].message };
     }
     console.error("Unexpected error:", error);
     return { error: "An unexpected error occurred" };

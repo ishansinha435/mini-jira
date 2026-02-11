@@ -59,7 +59,7 @@ export function EditableStatusBadge({
     setIsUpdating(true);
 
     try {
-      const result = await updateTaskStatus(taskId, projectId, newStatus);
+      const result = await updateTaskStatus(taskId, newStatus);
 
       if (result.error) {
         // Revert on error

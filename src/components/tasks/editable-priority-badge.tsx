@@ -59,7 +59,7 @@ export function EditablePriorityBadge({
     setIsUpdating(true);
 
     try {
-      const result = await updateTaskPriority(taskId, projectId, newPriority);
+      const result = await updateTaskPriority(taskId, newPriority);
 
       if (result.error) {
         // Revert on error

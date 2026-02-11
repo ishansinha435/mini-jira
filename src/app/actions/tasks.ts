@@ -89,7 +89,7 @@ export async function createTask(
     return { success: true, task: task as Task };
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return { error: error.errors[0].message };
+      return { error: error.issues[0].message };
     }
     console.error("Unexpected error:", error);
     return { error: "An unexpected error occurred" };
@@ -260,7 +260,7 @@ export async function updateTask(
     return { success: true, task };
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return { error: error.errors[0].message };
+      return { error: error.issues[0].message };
     }
     console.error("Unexpected error:", error);
     return { error: "An unexpected error occurred" };

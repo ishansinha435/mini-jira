@@ -43,8 +43,8 @@ const taskSchema = z.object({
     .max(500, "Task title must be less than 500 characters")
     .trim(),
   description: z.string().optional(),
-  status: z.enum(["todo", "in_progress", "done"]).default("todo"),
-  priority: z.coerce.number().int().min(1).max(3).default(2),
+  status: z.enum(["todo", "in_progress", "done"]),
+  priority: z.number().int().min(1).max(3),
   due_date: z.string().optional(),
 });
 

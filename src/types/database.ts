@@ -54,3 +54,18 @@ export interface TaskUpdate {
   priority?: TaskPriority;
   due_date?: string;
 }
+
+// Comment types
+export interface Comment {
+  id: string;
+  task_id: string;
+  owner_id: string;
+  body: string;
+  created_at: string;
+}
+
+export interface CommentInsert {
+  task_id: string;
+  owner_id?: string; // Optional - will be set by RLS policy
+  body: string;
+}
