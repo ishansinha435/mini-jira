@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { z } from "zod";
 import type { Task, TaskStatus, TaskPriority } from "@/types/database";
+import { logTaskCreated, logTaskCompleted } from "./activity";
 
 // Validation schema for task creation
 const createTaskSchema = z.object({
@@ -85,6 +86,9 @@ export async function createTask(
     // Revalidate project page and dashboard
     revalidatePath(`/app/projects/${projectId}`);
     revalidatePath("/app");
+
+    // Log activity (non-blocking)
+    logTaskCreated(task.id, projectId, task.title).catch(console.error);
 
     return { success: true, task: task as Task };
   } catch (error) {
@@ -175,6 +179,11 @@ export async function updateTaskStatus(id: string, status: TaskStatus) {
     const task = data as Task;
     revalidatePath(`/app/projects/${task.project_id}`);
     revalidatePath("/app");
+
+    // Log completion activity if status changed to done (non-blocking)
+    if (status === "done") {
+      logTaskCompleted(task.id, task.project_id, task.title).catch(console.error);
+    }
 
     return { success: true, task };
   } catch (error) {

@@ -4,6 +4,7 @@ import { ArrowLeft, Calendar, Folder } from "lucide-react";
 import { getTaskById } from "@/app/actions/tasks";
 import { getProjectById } from "@/app/actions/projects";
 import { getComments, getCommentCount } from "@/app/actions/comments";
+import { getAttachments, getAttachmentCount } from "@/app/actions/attachments";
 import { createClient } from "@/lib/supabase/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -11,6 +12,8 @@ import { EditableStatusBadge } from "@/components/tasks/editable-status-badge";
 import { EditablePriorityBadge } from "@/components/tasks/editable-priority-badge";
 import { CommentComposer } from "@/components/tasks/comment-composer";
 import { CommentList } from "@/components/tasks/comment-list";
+import { AttachmentUploader } from "@/components/tasks/attachment-uploader";
+import { AttachmentList } from "@/components/tasks/attachment-list";
 
 interface TaskDetailPageProps {
   params: Promise<{ id: string }>;
@@ -51,6 +54,8 @@ export default async function TaskDetailPage({
   const project = await getProjectById(task.project_id);
   const comments = await getComments(id);
   const commentCount = await getCommentCount(id);
+  const attachments = await getAttachments(id);
+  const attachmentCount = await getAttachmentCount(id);
 
   // Get user email for comment display
   const supabase = await createClient();
@@ -171,7 +176,7 @@ export default async function TaskDetailPage({
                       Comments ({commentCount})
                     </TabsTrigger>
                     <TabsTrigger value="attachments" className="rounded-none">
-                      Attachments (0)
+                      Attachments ({attachmentCount})
                     </TabsTrigger>
                   </TabsList>
 
@@ -188,12 +193,12 @@ export default async function TaskDetailPage({
                   </TabsContent>
 
                   {/* Attachments Tab Content */}
-                  <TabsContent value="attachments" className="p-6">
-                    <div className="text-center py-8 text-gray-500">
-                      <p className="text-sm">
-                        Attachments coming in Milestone 5
-                      </p>
-                    </div>
+                  <TabsContent value="attachments" className="p-6 space-y-6">
+                    {/* Attachment Uploader */}
+                    <AttachmentUploader taskId={id} />
+
+                    {/* Attachments List */}
+                    <AttachmentList attachments={attachments} />
                   </TabsContent>
                 </Tabs>
               </CardContent>

@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { z } from "zod";
 import type { Project } from "@/types/database";
+import { logProjectCreated } from "./activity";
 
 // Validation schema for project creation
 const createProjectSchema = z.object({
@@ -53,7 +54,11 @@ export async function createProject(name: string) {
     // Revalidate dashboard to show new project
     revalidatePath("/app");
 
-    return { success: true, project: data as Project };
+    // Log activity (non-blocking)
+    const project = data as Project;
+    logProjectCreated(project.id, project.name).catch(console.error);
+
+    return { success: true, project };
   } catch (error) {
     if (error instanceof z.ZodError) {
       return { error: error.issues[0].message };

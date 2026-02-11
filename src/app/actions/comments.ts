@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { z } from "zod";
 import type { Comment } from "@/types/database";
+import { logCommentAdded } from "./activity";
 
 // Validation schema for comment creation
 const createCommentSchema = z.object({
@@ -65,6 +66,18 @@ export async function createComment(taskId: string, body: string) {
     // Revalidate task detail page and project page
     revalidatePath(`/app/tasks/${taskId}`);
     revalidatePath(`/app/projects/${task.project_id}`);
+
+    // Get task title for activity log
+    const { data: taskData } = await supabase
+      .from("tasks")
+      .select("title")
+      .eq("id", taskId)
+      .single();
+
+    // Log activity (non-blocking)
+    if (taskData) {
+      logCommentAdded(taskId, task.project_id, taskData.title).catch(console.error);
+    }
 
     return { success: true, comment: comment as Comment };
   } catch (error) {
