@@ -1,0 +1,246 @@
+# Mini JIRA - Quick Start for Reviewers
+
+## Prerequisites
+
+Choose ONE option:
+- **Option A (Docker):** Docker Desktop installed and running
+- **Option B (Local):** Node.js 20+ and npm installed
+
+## Setup Steps
+
+### 1. Extract the Project
+Unzip the `mini-jira-review.zip` file to a folder of your choice.
+
+### 2. Add Environment Variables
+Copy the provided `.env.local` file into the root `mini_jira` folder (same level as package.json).
+
+This file contains Supabase credentials - DO NOT share publicly or commit to git.
+
+### 3. Choose Your Method
+
+---
+
+## OPTION A: Docker (Recommended - No Node.js Required)
+
+### Prerequisites:
+- Docker Desktop installed and running (green icon in menu bar)
+
+### Steps:
+1. Open terminal/command prompt
+2. Navigate to the mini_jira folder:
+   ```
+   cd path/to/mini_jira
+   ```
+
+3. Build and run with Docker Compose:
+   ```
+   docker-compose up --build
+   ```
+
+4. Wait for the build (first time takes 1-2 minutes)
+   - You'll see: "Ready on http://0.0.0.0:3000"
+
+5. Open browser and go to:
+   ```
+   http://localhost:3000
+   ```
+
+6. **Sign up** with any email/password to create your test account
+   - Use a fake email (e.g., reviewer@test.com)
+   - Use any password (min 6 characters)
+
+7. Start exploring!
+
+**To Stop:**
+- Press Ctrl+C in the terminal
+- Or stop the container in Docker Desktop
+
+---
+
+## OPTION B: Local Development (Node.js)
+
+### Prerequisites:
+- Node.js 20+ installed (check with: `node -v`)
+- npm 10+ installed (check with: `npm -v`)
+
+### Steps:
+1. Open terminal/command prompt
+2. Navigate to the mini_jira folder:
+   ```
+   cd path/to/mini_jira
+   ```
+
+3. Install dependencies:
+   ```
+   npm install
+   ```
+   (This takes 1-2 minutes)
+
+4. Start the development server:
+   ```
+   npm run dev
+   ```
+
+5. Wait for startup (you'll see):
+   ```
+   ✓ Ready in Xms
+   ○ Local: http://localhost:3000
+   ```
+
+6. Open browser and go to:
+   ```
+   http://localhost:3000
+   ```
+
+7. **Sign up** with any email/password to create your test account
+   - Use a fake email (e.g., reviewer@test.com)
+   - Use any password (min 6 characters)
+
+8. Start exploring!
+
+**To Stop:**
+- Press Ctrl+C in the terminal
+
+---
+
+## What to Test
+
+### Core Features:
+
+✅ **Authentication**
+   - Sign up with a new account
+   - Log out and log back in
+   - Try incorrect password (should fail)
+
+✅ **Projects**
+   - Create a new project
+   - View all projects on dashboard
+   - Click "Projects" dropdown in navbar (should show your projects)
+   - Click on a project to view its tasks
+
+✅ **Tasks**
+   - Create tasks within a project
+   - Set status (Todo/In Progress/Done)
+   - Set priority (Low/Medium/High)
+   - Set due dates
+   - Edit task inline by clicking status/priority badges
+   - Click on task title to view full details
+
+✅ **Task Details Page**
+   - View complete task information
+   - Add comments
+   - Upload attachments (images, PDFs, documents)
+   - Download attachments
+   - Delete comments/attachments
+
+✅ **Activity Feed**
+   - Return to dashboard
+   - Check "Recent Activity" section
+   - Should show all your actions (projects created, tasks created, comments, etc.)
+
+✅ **Responsive Design**
+   - Resize browser window
+   - Check mobile view (toggle device toolbar in browser)
+
+---
+
+## Test Data
+
+Feel free to create as much test data as you want:
+- Your data is **completely isolated** (other reviewers can't see it)
+- Backend uses Row-Level Security (RLS) to ensure privacy
+- All features are fully functional with the shared Supabase backend
+
+Suggested test flow:
+1. Create 2-3 projects (e.g., "Work", "Personal", "Research")
+2. Add 5-10 tasks across projects
+3. Change some task statuses to "Done"
+4. Add comments to tasks
+5. Upload test files
+6. Check the activity feed updates
+
+---
+
+## Technology Stack
+
+- **Frontend:** Next.js 15 (App Router), React 19, TypeScript, Tailwind CSS
+- **UI:** shadcn/ui components
+- **Backend:** Supabase (Auth, PostgreSQL, Row-Level Security, Storage)
+- **Deployment:** Docker-ready with multi-stage build
+
+---
+
+## Troubleshooting
+
+### "Cannot connect to Docker daemon"
+- Make sure Docker Desktop is running
+- Look for the Docker whale icon in your system tray/menu bar
+- It should be steady (not animating)
+
+### "Port 3000 already in use"
+- Another application is using port 3000
+- Stop other dev servers or apps
+- Or change the port in docker-compose.yml to 3001
+
+### "Module not found" errors (Local option)
+- Delete node_modules folder
+- Run `npm install` again
+
+### Login/Signup not working
+- Check that .env.local file is in the correct location (root folder)
+- Verify .env.local has two lines: NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+### Features not working (comments/attachments/activity)
+- These should work out of the box
+- Database migrations are already applied
+- If issues persist, contact the developer
+
+---
+
+## Database & Privacy
+
+- **Backend:** Uses a shared Supabase PostgreSQL database
+- **Security:** Row-Level Security (RLS) ensures complete data isolation
+- **Your data:** Only visible to your account (email you signed up with)
+- **Other reviewers:** Cannot see your projects/tasks/comments
+
+---
+
+## Additional Documentation
+
+For more detailed information, see:
+- `README.md` - Full project documentation
+- `ProjectDocs/contexts/projectContext.md` - Project specifications
+- `ProjectDocs/migrations/` - Database schema and setup
+- `ProjectDocs/Build_Notes/` - Implementation notes per milestone
+
+---
+
+## Support
+
+If you encounter issues:
+1. Check browser console (F12) for errors
+2. Check terminal output for error messages
+3. Verify .env.local is present and correct
+4. Try the alternative setup method (Docker vs Local)
+
+---
+
+## Clean Up After Review
+
+### Docker option:
+```
+docker-compose down
+docker rmi mini_jira-app
+```
+
+### Local option:
+```
+# Just delete the folder - no cleanup needed
+```
+
+Your test account and data remain in the Supabase database (isolated and private).
+
+---
+
+Enjoy reviewing Mini JIRA! 🎉

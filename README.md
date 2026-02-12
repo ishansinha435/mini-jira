@@ -1,5 +1,7 @@
 # Mini JIRA
 
+**🚀 Live Demo:** [https://mini-jira-beta.vercel.app](https://mini-jira-beta.vercel.app)
+
 A visually polished, personal Jira-style task tracker built with Next.js, Supabase, and shadcn/ui. Features include project management, task tracking with status/priority, comments, file attachments, and activity logging.
 
 ## Features
@@ -19,228 +21,61 @@ A visually polished, personal Jira-style task tracker built with Next.js, Supaba
 - **UI Components:** shadcn/ui
 - **Backend:** Supabase (Auth, Postgres, RLS, Storage)
 - **Icons:** lucide-react
-- **Deployment:** Docker-ready with multi-stage build
+- **Deployment:** Vercel (production), Docker-ready
 
-## Getting Started
+## Quick Start (Local Development)
 
-### Option 1: Local Development (Recommended for Development)
+**Prerequisites:**
+- Node.js 20+, npm 10+
+- Supabase account ([free tier](https://supabase.com))
 
-#### Prerequisites
-
-- Node.js 20+ (LTS)
-- npm 10+
-- Supabase account ([Sign up free](https://supabase.com))
-
-#### Setup Steps
-
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd mini_jira
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Configure environment variables**
-   ```bash
-   cp .env.example .env.local
-   ```
-   
-   Edit `.env.local` and add your Supabase credentials:
-   ```
-   NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here
-   ```
-   
-   Get these from: Supabase Dashboard → Project Settings → API
-
-4. **Set up Supabase database**
-   
-   In Supabase Dashboard → SQL Editor, run these migrations in order:
-   - `ProjectDocs/migrations/004_create_comments_table.sql`
-   - `ProjectDocs/migrations/005_create_attachments_table.sql`
-   - `ProjectDocs/migrations/006_create_activity_table.sql`
-
-5. **Set up Supabase Storage**
-   
-   Follow the instructions in `ProjectDocs/migrations/STORAGE_BUCKET_SETUP.md` to:
-   - Create the "attachments" bucket
-   - Configure storage policies
-
-6. **Run the development server**
-   ```bash
-   npm run dev
-   ```
-
-7. **Open the app**
-   
-   Visit [http://localhost:3000](http://localhost:3000) and sign up!
-
-### Option 2: Docker (Recommended for Production/Review)
-
-#### Prerequisites
-
-- Docker Desktop or Docker Engine
-- Supabase account ([Sign up free](https://supabase.com))
-
-#### Setup Steps
-
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd mini_jira
-   ```
-
-2. **Configure environment variables**
-   ```bash
-   cp .env.example .env.local
-   ```
-   
-   Edit `.env.local` with your Supabase credentials (same as local dev)
-
-3. **Set up Supabase** (same as Option 1, steps 4-5)
-   - Apply database migrations
-   - Configure storage bucket
-
-4. **Build and run with Docker**
-   ```bash
-   docker-compose up --build
-   ```
-   
-   Or manually:
-   ```bash
-   docker build -t mini-jira .
-   docker run -p 3000:3000 --env-file .env.local mini-jira
-   ```
-
-5. **Open the app**
-   
-   Visit [http://localhost:3000](http://localhost:3000)
-
-## Project Structure
-
-```
-/src
-  /app          - Next.js App Router pages
-  /components   - Reusable React components
-    /ui         - shadcn/ui components
-  /lib          - Utility functions
-  /types        - TypeScript type definitions
-/ProjectDocs    - Project documentation
-  /contexts     - Project context and specifications
-  /mockups      - UI mockups and design specifications
-  /Build_Notes  - Implementation notes per milestone
-```
-
-## Development Milestones
-
-- [x] **Milestone 0** - Repo + Foundation
-- [x] **Milestone 1** - Supabase Connection + Auth
-- [x] **Milestone 2** - Projects (CRUD)
-- [x] **Milestone 3** - Tasks (CRUD + List UI)
-- [x] **Milestone 4** - Task Detail + Comments
-- [x] **Milestone 5** - Attachments (Storage)
-- [x] **Milestone 6** - Docker + Packaging + Docs
-- [x] **Milestone 7** - Activity Feed + Final Polish
-
-## Database Migrations
-
-All SQL migrations are located in `ProjectDocs/migrations/`. Apply them in order via Supabase SQL Editor:
-
-1. `004_create_comments_table.sql` - Comments functionality
-2. `005_create_attachments_table.sql` - Attachments functionality  
-3. `006_create_activity_table.sql` - Activity tracking
-
-**Note:** Migrations 001-003 (auth, projects, tasks) were applied during early development.
-
-## Storage Setup
-
-Follow the guide in `ProjectDocs/migrations/STORAGE_BUCKET_SETUP.md` to:
-1. Create the "attachments" storage bucket
-2. Configure bucket policies for secure file access
-
-## Scripts
-
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run start` - Start production server (after build)
-- `npm run lint` - Run ESLint
-
-## Docker Commands
-
+**Setup:**
 ```bash
-# Build the Docker image
-docker build -t mini-jira .
+# Clone and install
+git clone <repository-url>
+cd mini_jira
+npm install
 
-# Run the container
-docker run -p 3000:3000 --env-file .env.local mini-jira
+# Configure environment
+cp .env.example .env.local
+# Add your Supabase URL and anon key to .env.local
 
-# Or use docker-compose
+# Apply database migrations (in Supabase Dashboard → SQL Editor)
+# Run migrations from ProjectDocs/migrations/ in order: 004, 005, 006
+
+# Set up storage bucket
+# Follow ProjectDocs/migrations/STORAGE_BUCKET_SETUP.md
+
+# Run the app
+npm run dev
+```
+
+Visit [http://localhost:3000](http://localhost:3000)
+
+**Docker:**
+```bash
 docker-compose up --build
 ```
 
-## Troubleshooting
-
-### "Module not found" or build errors
-- Ensure all dependencies are installed: `npm install`
-- Delete `.next` folder and rebuild: `rm -rf .next && npm run build`
-
-### "Unauthorized" or "Not authenticated" errors
-- Verify `.env.local` has correct Supabase credentials
-- Check that Supabase project is active (not paused)
-- Ensure RLS policies are applied
-
-### Attachments upload fails
-- Verify Storage bucket "attachments" exists
-- Check that storage policies are configured
-- Ensure bucket is private (not public)
-
-### Activity feed is empty
-- Activity tracking requires migration 006 to be applied
-- Activities are only logged for new actions after migration
+📖 **Detailed Setup:** See [ProjectDocs/migrations/COMPLETE_MIGRATION_GUIDE.md](ProjectDocs/migrations/COMPLETE_MIGRATION_GUIDE.md)
 
 ## Documentation
 
-- [Project Context](./ProjectDocs/contexts/projectContext.md) - Full project specification
-- [Mockup Specifications](./ProjectDocs/mockups/MOCKUP_SPECIFICATIONS.md) - UI design guidelines
-- [Migration Files](./ProjectDocs/migrations/) - Database schema migrations
-- [Build Notes](./ProjectDocs/Build_Notes/) - Implementation details per milestone
+- [Complete Migration Guide](./ProjectDocs/migrations/COMPLETE_MIGRATION_GUIDE.md) - Database setup
+- [Project Context](./ProjectDocs/contexts/projectContext.md) - Full specification
+- [Build Notes](./ProjectDocs/Build_Notes/) - Implementation details
 
-## Project Structure
+## Architecture
 
-```
-/src
-  /app                    - Next.js App Router
-    /actions              - Server actions
-    /app                  - Protected routes
-      /projects/[id]      - Project task list
-      /tasks/[id]         - Task detail page
-    /login                - Authentication
-  /components             - React components
-    /auth                 - Login/signup forms
-    /projects             - Project components
-    /tasks                - Task components
-    /ui                   - shadcn/ui primitives
-  /lib                    - Utilities
-    /supabase             - Supabase clients
-  /types                  - TypeScript definitions
-/ProjectDocs
-  /migrations             - SQL migrations
-  /mockups                - UI mockups
-  /Build_Notes            - Implementation notes
-```
+- **Next.js App Router** with server/client components
+- **Supabase** for auth, database, and storage
+- **Row-Level Security (RLS)** - users can only access their own data
+- **shadcn/ui** components with Tailwind CSS
 
-## Security
+## Development
 
-- All tables use Row-Level Security (RLS)
-- Users can only access their own data
-- File uploads restricted to authenticated users
-- Storage policies enforce owner-based access
-- No service role keys exposed to client
+All milestones (0-7) complete. See [Build Notes](./ProjectDocs/Build_Notes/) for implementation details.
 
-## License
+---
 
-Private project for assessment purposes.
+Built for assessment purposes.
