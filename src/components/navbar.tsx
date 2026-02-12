@@ -1,15 +1,17 @@
 import Link from "next/link";
-import { LayoutDashboard, ChevronDown, User } from "lucide-react";
+import { LayoutDashboard, ChevronDown, User, Folder } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { LogoutButton } from "@/components/auth/logout-button";
 import { createClient } from "@/lib/supabase/server";
+import { getProjects } from "@/app/actions/projects";
 
 function getInitials(email: string): string {
   // Get traditional initials from email (first letter of each part, capitalized)
@@ -35,6 +37,7 @@ function getDisplayName(email: string): string {
 export async function Navbar() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
+  const projects = await getProjects();
 
   const userEmail = user?.email || "";
   const displayName = userEmail ? getDisplayName(userEmail) : "User";
@@ -70,29 +73,25 @@ export async function Navbar() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-56">
-              <DropdownMenuItem>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full" />
-                  <span>Personal</span>
-                </div>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <span className="ml-4">Interview Prep</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <span className="ml-4">Columbia Research</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-red-500 rounded-full" />
-                  <span>Side Project</span>
-                </div>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full" />
-                  <span>Freelance Work</span>
-                </div>
+              {projects.length > 0 ? (
+                projects.map((project) => (
+                  <DropdownMenuItem key={project.id} asChild>
+                    <Link href={`/app/projects/${project.id}`} className="flex items-center gap-2">
+                      <Folder className="w-4 h-4 text-gray-500" />
+                      <span>{project.name}</span>
+                    </Link>
+                  </DropdownMenuItem>
+                ))
+              ) : (
+                <DropdownMenuItem disabled>
+                  <span className="text-gray-500 text-sm">No projects yet</span>
+                </DropdownMenuItem>
+              )}
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <Link href="/app" className="text-blue-600">
+                  View all projects
+                </Link>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
